@@ -1,0 +1,63 @@
+services:
+  api-gateway:
+    image: n0n4m3q/practice-api-gateway:0.0.1-SNAPSHOT
+    ports:
+      - "8765:8765"
+    restart: on-failure
+    depends_on:
+      - eureka
+      - user-service
+      - post-service
+    networks:
+      - spring
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  # eureka is used for load balancing
+  eureka:
+    image: n0n4m3q/practice-eureka:0.0.1-SNAPSHOT
+    expose:
+      - "8761"
+    restart: on-failure
+    networks:
+      - spring
+
+  auth-service:
+    image: n0n4m3q/practice-auth-service:0.0.1-SNAPSHOT
+    expose:
+      - "8100"
+    restart: on-failure
+    depends_on:
+      - eureka
+    networks:
+      - spring
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  post-service:
+    image: n0n4m3q/practice-post-service:0.0.1-SNAPSHOT
+    expose:
+      - "8081"
+    restart: on-failure
+    depends_on:
+      - eureka
+    networks:
+      - spring
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+  user-service:
+    image: n0n4m3q/practice-user-service:0.0.1-SNAPSHOT
+    expose:
+      - "8080"
+    restart: on-failure
+    depends_on:
+      - eureka
+    networks:
+      - spring
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+
+networks:
+  spring:
+    driver: bridge
