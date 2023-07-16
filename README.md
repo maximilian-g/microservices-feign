@@ -1,6 +1,37 @@
 # microservices-feign
 ![image](architecture.png)
 
+
+Main user flow:
+
+1 - Login\register - **/auth/api/v1/auth/login**, **/auth/api/v1/auth/register** - **POST**
+
+With body:
+
+{
+
+"username": "Bob",
+
+"password": "123456"
+
+}
+<br><br>
+2 - Create\like\comment a post - **/post/api/v1/posts**, **/post/api/v1/posts/{postId}/like** (no body), **/post/api/v1/posts/{postId}** - **POST**
+
+Create post, comment a post body:
+
+{
+
+"content": "My comment or post message",
+
+"userId": 1
+
+}
+
+<br><br>
+3 - Follow\unfollow a user -  **/user/api/v1/users/{yourUserId}/follow/{targetUserId}**, **/user/api/v1/users/{yourUserId}/unfollow/{targetUserId}** - **POST without body**
+<br><br>
+
 **Current implementation**:
 
 <br><br>
@@ -66,5 +97,7 @@ Used for load balancing.
 **front-end**:
 
 No implementation for now, just to see full picture of architecture
+
+<br><br>
 
 In docker only api-gatewatay is available, we cannot directly access any other services.
