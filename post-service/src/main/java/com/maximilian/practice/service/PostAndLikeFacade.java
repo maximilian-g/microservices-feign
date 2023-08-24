@@ -63,26 +63,31 @@ public class PostAndLikeFacade implements AuthInfoResolver {
                 .collect(Collectors.toList());
     }
 
-    // deletes a post and all comments of this post recursively
+    // deletes a post and all comments of this post
     public RestResponse deletePost(Long id) {
         AuthInfoResponse authInfo = getCurrentUser();
         Post post = postService.getPostById(id);
-        log.info("User '" + authInfo.userId() + "' is trying to create comment for user '" + post.getUserId() + "'.");
+        log.info("User '" + authInfo.userId() + "' is trying to delete post for user '" + post.getUserId() + "'.");
         if (!post.getUserId().equals(authInfo.userId())) {
             throw new GeneralException("Cannot create comment.", HttpStatus.UNAUTHORIZED);
         }
         RestResponse response = new RestResponse("Successfully deleted post and " +
                 post.getChildPosts().size() + " comments.");
-        post.getChildPosts().forEach(c -> deleteComment(c.getId()));
-        postService.deletePostById(post.getId());
+        post.getChildPosts().forEach(childPost ->
+                deleteCommentLikes(childPost.getId()));
+        likeService.removeLikes(id);
+        postService.deletePostById(id);
         return response;
     }
 
-    protected void deleteComment(Long commentId) {
+    protected void deleteCommentLikes(Long commentId) {
         Post post = postService.getPostById(commentId);
-        log.info("Removing comment #" + post.getId() + " because parent post is being removed...");
-        post.getChildPosts().forEach(c -> deleteComment(c.getId()));
-        postService.deletePostById(post.getId());
+        log.info("Removing likes of comment #" +
+                post.getId() + " because parent post is being removed...");
+        post.getChildPosts().forEach(childPost -> {
+            likeService.removeLikes(childPost.getId());
+        });
+        likeService.removeLikes(commentId);
     }
 
     public RestResponse addLike(Long postId) {

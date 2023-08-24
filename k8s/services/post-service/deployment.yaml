@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service
+  labels:
+    app: post-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: post-service
+      labels:
+        app: post-service
+    spec:
+      containers:
+        - name: post-service
+          image: n0n4m3q/practice-post-service:0.0.1-SNAPSHOT
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8081
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: post-service

@@ -40,10 +40,16 @@ public class LikeService {
     }
 
     public void removeLike(Long postId, Long userId) {
+        log.info("Removing like from user #" + userId + " of post #" + postId);
         LikeId likeId = new LikeId();
         likeId.setPostId(postId);
         likeId.setUserId(userId);
         likeRepository.deleteById(likeId);
+    }
+
+    public void removeLikes(Long postId) {
+        log.info("Getting all likes of post " + postId + " for removal...");
+        getLikesOfPost(postId).forEach(l -> removeLike(postId, l.getId().getUserId()));
     }
 
     public long getLikesQuantityOfPost(Long postId) {

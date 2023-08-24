@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-gateway
+  labels:
+    app: api-gateway
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: api-gateway
+      labels:
+        app: api-gateway
+    spec:
+      containers:
+        - name: api-gateway
+          image: n0n4m3q/practice-api-gateway:0.0.1-SNAPSHOT
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8765
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: kube
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: api-gateway

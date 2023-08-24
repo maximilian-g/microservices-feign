@@ -29,6 +29,7 @@
         <boot.plugin.version>2.7.9</boot.plugin.version>
     </properties>
 
+    <!--  Dependencies included in all modules  -->
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
